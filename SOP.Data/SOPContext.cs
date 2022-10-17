@@ -9,6 +9,7 @@ namespace SOP.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSnakeCaseNamingConvention();
+
         public DbSet<Manufacturer> Manufacturers { get; set; }
         public DbSet<Model> Models { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }

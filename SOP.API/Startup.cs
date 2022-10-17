@@ -4,9 +4,11 @@ using Microsoft.OpenApi.Models;
 using SOP.Data;
 using SOP.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using GraphQL.Types;
 using SOP.API.GraphQL.Schemas;
-using GraphQL.Server;
+using GraphQL;
+using GraphiQl;
+using SOP.API.GraphQL.GraphTypes;
+using GraphQL.Types;
 
 namespace SOP.API
 {
@@ -26,15 +28,12 @@ namespace SOP.API
             services.AddEndpointsApiExplorer();
 
             services.AddDbContext<SOPContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("SOPContext")));
+                options.UseNpgsql(Configuration.GetConnectionString("SOPContext")), ServiceLifetime.Singleton);
 
-            services.AddScoped<IManufacturerRepository, ManufacturerRepository>();
-            services.AddScoped<IModelRepository, ModelRepository>();
-            services.AddScoped<IVehicleRepository, VehicleRepository>();
-            services.AddScoped<IOwnerRepository, OwnerRepository>();
-
-            services.AddScoped<ISchema, OwnerSchema>();
-            services.AddGraphQL(options => options.EnableMetrics = true).AddSystemTextJson();
+            services.AddTransient<IManufacturerRepository, ManufacturerRepository>();
+            services.AddTransient<IModelRepository, ModelRepository>();
+            services.AddTransient<IVehicleRepository, VehicleRepository>();
+            services.AddTransient<IOwnerRepository, OwnerRepository>();
 
             services.AddSwaggerGen(
                 config => {
@@ -46,6 +45,13 @@ namespace SOP.API
                     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                     config.IncludeXmlComments(xmlPath);
                 });
+
+            services.AddGraphQL(builder => builder
+                .AddNewtonsoftJson()
+                .AddAutoSchema<AutoSchema>()
+                .AddSchema<AutoSchema>()
+                .AddGraphTypes(typeof(VehicleGraphType).Assembly)
+                );
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -53,7 +59,6 @@ namespace SOP.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseGraphQLAltair();
             }
             else
             {
@@ -67,7 +72,8 @@ namespace SOP.API
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseGraphQL<ISchema>();
+            app.UseGraphQL<AutoSchema>();
+            app.UseGraphiQl("/graphiql");
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(
