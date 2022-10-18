@@ -41,7 +41,7 @@ namespace SOP.API.GraphQL.Mutations
                     };
 
                     _repository.CreateOwner(owner);
-                    return owner;
+                    return _repository.FindOwner(email);
                 }
             );
 
@@ -72,11 +72,11 @@ namespace SOP.API.GraphQL.Mutations
                     };
 
                     _repository.UpdateOwner(owner);
-                    return owner;
+                    return _repository.FindOwner(email);
                 }
             );
 
-            Field<OwnerGraphType>(
+            Field<StringGraphType>(
                 "deleteOwner",
                 arguments: new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "email" }

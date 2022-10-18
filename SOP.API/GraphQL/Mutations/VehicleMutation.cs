@@ -38,7 +38,7 @@ public class VehicleMutation : ObjectGraphType
                 };
 
                 _repository.CreateVehicle(vehicle);
-                return vehicle;
+                return _repository.FindVehicle(registration);
             }
         );
     }

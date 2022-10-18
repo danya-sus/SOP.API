@@ -9,6 +9,14 @@ using GraphQL;
 using GraphiQl;
 using SOP.API.GraphQL.GraphTypes;
 using GraphQL.Types;
+using EasyNetQ;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.IO;
+using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 
 namespace SOP.API
 {
@@ -48,9 +56,9 @@ namespace SOP.API
 
             services.AddGraphQL(builder => builder
                 .AddNewtonsoftJson()
-                .AddAutoSchema<AutoSchema>()
-                .AddSchema<AutoSchema>()
-                .AddGraphTypes(typeof(VehicleGraphType).Assembly)
+                .AddAutoSchema<OwnerSchema>()
+                .AddSchema<OwnerSchema>()
+                .AddGraphTypes(typeof(OwnerGraphType).Assembly)
                 );
         }
 
@@ -72,7 +80,7 @@ namespace SOP.API
             app.UseSwagger();
             app.UseSwaggerUI();
 
-            app.UseGraphQL<AutoSchema>();
+            app.UseGraphQL<OwnerSchema>();
             app.UseGraphiQl("/graphiql");
 
             app.UseEndpoints(endpoints => {

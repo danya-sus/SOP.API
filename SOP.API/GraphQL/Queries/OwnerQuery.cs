@@ -3,6 +3,7 @@ using GraphQL.Types;
 using SOP.API.GraphQL.GraphTypes;
 using SOP.Data.Repositories;
 using SOP.Models.Entities;
+using System.Collections.Generic;
 
 namespace SOP.API.GraphQL.Queries
 {
