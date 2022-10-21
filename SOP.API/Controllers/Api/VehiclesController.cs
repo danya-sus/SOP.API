@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EasyNetQ;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SOP.Data.Repositories;
+using SOP.Messages.Messages;
+using SOP.Models.Entities;
 using SOP.ModelsDto.Dto;
+using System;
 using System.Dynamic;
 using System.Threading.Tasks;
 
@@ -13,10 +17,12 @@ namespace SOP.API.Controllers.Api
     {
         private readonly IVehicleRepository _repository;
         private readonly ILogger<VehiclesController> _logger;
+        private readonly IBus _bus;
 
-        public VehiclesController(IVehicleRepository repository, ILogger<VehiclesController> logger)
+        public VehiclesController(IVehicleRepository repository, ILogger<VehiclesController> logger, IBus bus)
         {
             _repository = repository;
+            _bus = bus;
             _logger = logger;
         }
 
@@ -102,8 +108,24 @@ namespace SOP.API.Controllers.Api
         [HttpPost]
         public IActionResult Post([FromBody] VehicleDto dto)
         {
-            _repository.CreateVehicle(dto);
+            var result = _repository.CreateVehicle(dto);
+            PublishNewVehicleMessage(result);
             return GetVehicle(dto.Registration);
+        }
+
+        private void PublishNewVehicleMessage(Vehicle vehicle)
+        {
+            var message = new NewVehicleMessage()
+            {
+                Registration = vehicle.Registration,
+                Manufacturer = vehicle.VehicleModel?.Manufacturer?.Name,
+                ModelName = vehicle.VehicleModel?.Name,
+                ModelCode = vehicle.VehicleModel?.Code,
+                Color = vehicle.Color,
+                Year = vehicle.Year,
+                ListedAtUtc = DateTime.UtcNow
+            };
+            _bus.PubSub.Publish(message);
         }
 
         [HttpPut]

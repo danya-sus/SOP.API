@@ -10,8 +10,8 @@ namespace SOP.Data.Repositories
 		public int CountVehicles();
 		public IEnumerable<Vehicle> ListVehicles(int index, int count);
 		public Vehicle FindVehicle(string registration);
-		public void CreateVehicle(VehicleDto vehicleDto);
-		public void UpdateVehicle(VehicleDto vehicleDto);
+		public Vehicle CreateVehicle(VehicleDto vehicleDto);
+		public Vehicle UpdateVehicle(VehicleDto vehicleDto);
 		public void DeleteVehicle(string registration);
 	}
 }

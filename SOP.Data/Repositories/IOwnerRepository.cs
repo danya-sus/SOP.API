@@ -13,8 +13,8 @@ namespace SOP.Data.Repositories
         public int CountOwners();
         public IEnumerable<Owner> ListOwners(int index, int count);
         public Owner FindOwner(string id);
-        public void CreateOwner(OwnerDto ownerDto);
-        public void UpdateOwner(OwnerDto ownerDto);
+        public Owner CreateOwner(OwnerDto ownerDto);
+        public Owner UpdateOwner(OwnerDto ownerDto);
         public void DeleteOwner(string id);
     }
 }

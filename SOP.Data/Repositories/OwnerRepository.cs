@@ -38,7 +38,7 @@ namespace SOP.Data.Repositories
             return _context.Owners.Include(v => v.Vehicle).ThenInclude(m => m.VehicleModel).ThenInclude(m => m.Manufacturer).FirstOrDefault(o => o.Email == id);
         }
 
-        public void CreateOwner(OwnerDto ownerDto)
+        public Owner CreateOwner(OwnerDto ownerDto)
         {
             var vehicle = _vehicleRepository.FindVehicle(ownerDto.VehicleRegistration);
             var owner = new Owner
@@ -52,9 +52,11 @@ namespace SOP.Data.Repositories
 
             _context.Owners.Add(owner);
             _context.SaveChanges();
+
+            return FindOwner(ownerDto.Email);
         }
 
-        public void UpdateOwner(OwnerDto ownerDto)
+        public Owner UpdateOwner(OwnerDto ownerDto)
         {
             var str = $"UPDATE owners " +
                       $"SET name = \'{ownerDto.Name}\', " +
@@ -64,9 +66,9 @@ namespace SOP.Data.Repositories
                       $"WHERE email = \'{ownerDto.Email}\'";
 
             var result = _context.Database.ExecuteSqlRaw(str);
-            if (result > 0) return;
+            if (result == 0) throw new DbUpdateException();
 
-            CreateOwner(ownerDto);
+            return FindOwner(ownerDto.Email);
         }
 
         public void DeleteOwner(string id)

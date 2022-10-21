@@ -1,10 +1,12 @@
-﻿    using Microsoft.AspNetCore.Mvc;
+﻿using EasyNetQ;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using SOP.Data.Repositories;
+using SOP.Messages.Messages;
+using SOP.Models.Entities;
 using SOP.ModelsDto.Dto;
+using System;
 using System.Dynamic;
-using System.Threading.Tasks;
 
 namespace SOP.API.Controllers.Api
 {
@@ -14,10 +16,12 @@ namespace SOP.API.Controllers.Api
     {
         private readonly IOwnerRepository _repository;
         private readonly ILogger<OwnersController> _logger;
+        private readonly IBus _bus;
 
-        public OwnersController(IOwnerRepository repository, ILogger<OwnersController> logger)
+        public OwnersController(IOwnerRepository repository, ILogger<OwnersController> logger, IBus bus)
         {
             _repository = repository;
+            _bus = bus;
             _logger = logger;
         }
 
@@ -102,8 +106,9 @@ namespace SOP.API.Controllers.Api
         [HttpPost]
         public IActionResult Post([FromBody] OwnerDto dto)
         {
-            _repository.CreateOwner(dto);
-            return Ok(dto);
+            var result = _repository.CreateOwner(dto);
+            PublishNewOwnerMessage(result);
+            return GetOwner(dto.Email);
         }
 
         [HttpPut("{id}")]
@@ -118,7 +123,7 @@ namespace SOP.API.Controllers.Api
             };
 
             _repository.UpdateOwner(owner);
-            return Ok(dto);
+            return GetOwner(id);
         }
 
         [HttpDelete("{id}")]
@@ -127,6 +132,20 @@ namespace SOP.API.Controllers.Api
             if (id == default) return BadRequest();
             _repository.DeleteOwner(id);
             return NoContent();
+        }
+
+        private void PublishNewOwnerMessage(Owner owner)
+        {
+            var message = new NewOwnerMessage
+            {
+                Email = owner.Email,
+                Name = owner.Name,
+                Surname = owner.Surname,
+                Birthday = owner.Birthday,
+                VehicleRegistration = owner.VehicleRegistration,
+                ListedAtUtc = DateTime.Now
+            };
+            _bus.PubSub.Publish(message);
         }
     }
 }

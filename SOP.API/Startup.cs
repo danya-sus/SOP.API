@@ -8,7 +8,6 @@ using SOP.API.GraphQL.Schemas;
 using GraphQL;
 using GraphiQl;
 using SOP.API.GraphQL.GraphTypes;
-using GraphQL.Types;
 using EasyNetQ;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,6 +59,9 @@ namespace SOP.API
                 .AddSchema<OwnerSchema>()
                 .AddGraphTypes(typeof(OwnerGraphType).Assembly)
                 );
+
+            var bus = RabbitHutch.CreateBus(Configuration.GetConnectionString("SOPRabbitMQ"));
+            services.AddSingleton<IBus>(bus);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

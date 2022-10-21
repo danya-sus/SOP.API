@@ -40,8 +40,8 @@ namespace SOP.API.GraphQL.Mutations
                         VehicleRegistration = vehicleRegistration
                     };
 
-                    _repository.CreateOwner(owner);
-                    return _repository.FindOwner(email);
+                    var result = _repository.CreateOwner(owner);
+                    return result;
                 }
             );
 
@@ -71,8 +71,8 @@ namespace SOP.API.GraphQL.Mutations
                         VehicleRegistration = vehicleRegistration
                     };
 
-                    _repository.UpdateOwner(owner);
-                    return _repository.FindOwner(email);
+                    var result = _repository.UpdateOwner(owner);
+                    return result;
                 }
             );
 

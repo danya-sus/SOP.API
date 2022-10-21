@@ -38,7 +38,7 @@ namespace SOP.Data.Repositories
             return _context.Vehicles.Include(m => m.VehicleModel).ThenInclude(m => m.Manufacturer).FirstOrDefault(v => v.Registration == registration);
         }
 
-        public void CreateVehicle(VehicleDto vehicleDto)
+        public Vehicle CreateVehicle(VehicleDto vehicleDto)
         {
             var model = _context.Models.FirstOrDefault(c => c.Code == vehicleDto.ModelCode);
             var vehicle = new Vehicle
@@ -51,9 +51,11 @@ namespace SOP.Data.Repositories
 
             _context.Vehicles.Add(vehicle);
             _context.SaveChanges();
+
+            return FindVehicle(vehicleDto.Registration);
         }
 
-        public void UpdateVehicle(VehicleDto vehicleDto)
+        public Vehicle UpdateVehicle(VehicleDto vehicleDto)
         {
             var str = $"UPDATE \"vehicles\" " +
                       $"SET \'model_code\' = \'{vehicleDto.ModelCode}\' " +
@@ -62,9 +64,9 @@ namespace SOP.Data.Repositories
                       $"WHERE \'reqistration\' = \'{vehicleDto.Registration}\'";
 
             var result = _context.Database.ExecuteSqlRaw(str);
-            if (result > 0) return;
+            if (result == 0) throw new DbUpdateException();
 
-            CreateVehicle(vehicleDto);
+            return FindVehicle(vehicleDto.Registration);
         }
 
         public void DeleteVehicle(string registration)

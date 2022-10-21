@@ -37,8 +37,8 @@ public class VehicleMutation : ObjectGraphType
                     ModelCode = modelCode
                 };
 
-                _repository.CreateVehicle(vehicle);
-                return _repository.FindVehicle(registration);
+                var result = _repository.CreateVehicle(vehicle);
+                return result;
             }
         );
     }

@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SOP.Data\SOP.Data.csproj" />
+    <ProjectReference Include="..\SOP.Messages\SOP.Messages.csproj" />
     <ProjectReference Include="..\SOP.ModelsDto\SOP.ModelsDto.csproj" />
   </ItemGroup>
 
