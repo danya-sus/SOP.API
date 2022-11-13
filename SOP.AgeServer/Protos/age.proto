@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option csharp_namespace = "SOP.AgeServer";
+
+package age;
+
+service Ager {
+	rpc GetAge (AgeRequest) returns (AgeReply);
+}
+
+message AgeRequest {
+	string email = 1;
+	string name = 2;
+	string surname = 3;
+	string birthday = 4;
+	string vehicleRegistration = 6;
+}
+
+message AgeReply {
+	uint32 years = 1;
+	uint32 months = 2;
+	uint32 days = 3;
+}

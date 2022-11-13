@@ -15,9 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOP.Messages", "SOP.Message
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOP.AuditLog", "SOP.AuditLog\SOP.AuditLog.csproj", "{F6708173-C62F-415C-B6BA-A5F39DDA2F9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOP.PricingServer", "SOP.PricingServer\SOP.PricingServer.csproj", "{2112B760-3B4E-4141-B454-3446E84CD69B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOP.PricingServer", "SOP.PricingServer\SOP.PricingServer.csproj", "{2112B760-3B4E-4141-B454-3446E84CD69B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOP.PricingClient", "SOP.PricingClient\SOP.PricingClient.csproj", "{6535E3AC-FB4C-4028-905B-D6EC2A95E889}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOP.PricingClient", "SOP.PricingClient\SOP.PricingClient.csproj", "{6535E3AC-FB4C-4028-905B-D6EC2A95E889}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOP.AgeServer", "SOP.AgeServer\SOP.AgeServer.csproj", "{49DBE074-6255-4F37-8E56-EFA214947D8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOP.AgeClient", "SOP.AgeClient\SOP.AgeClient.csproj", "{C165D477-2CEF-4E18-8139-124939AE510E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +61,14 @@ Global
 		{6535E3AC-FB4C-4028-905B-D6EC2A95E889}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6535E3AC-FB4C-4028-905B-D6EC2A95E889}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6535E3AC-FB4C-4028-905B-D6EC2A95E889}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49DBE074-6255-4F37-8E56-EFA214947D8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49DBE074-6255-4F37-8E56-EFA214947D8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49DBE074-6255-4F37-8E56-EFA214947D8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49DBE074-6255-4F37-8E56-EFA214947D8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C165D477-2CEF-4E18-8139-124939AE510E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C165D477-2CEF-4E18-8139-124939AE510E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C165D477-2CEF-4E18-8139-124939AE510E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C165D477-2CEF-4E18-8139-124939AE510E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
