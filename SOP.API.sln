@@ -19,9 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOP.PricingServer", "SOP.Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOP.PricingClient", "SOP.PricingClient\SOP.PricingClient.csproj", "{6535E3AC-FB4C-4028-905B-D6EC2A95E889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOP.AgeServer", "SOP.AgeServer\SOP.AgeServer.csproj", "{49DBE074-6255-4F37-8E56-EFA214947D8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOP.AgeServer", "SOP.AgeServer\SOP.AgeServer.csproj", "{49DBE074-6255-4F37-8E56-EFA214947D8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOP.AgeClient", "SOP.AgeClient\SOP.AgeClient.csproj", "{C165D477-2CEF-4E18-8139-124939AE510E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOP.AgeClient", "SOP.AgeClient\SOP.AgeClient.csproj", "{C165D477-2CEF-4E18-8139-124939AE510E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOP.Web", "SOP.Web\SOP.Web.csproj", "{FF059D3F-D21C-4FCD-A441-2D12110A7843}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOP.SignalRClient", "SOP.SignalRClient\SOP.SignalRClient.csproj", "{BE693967-F27E-4B07-99D6-F770B1B81106}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +73,14 @@ Global
 		{C165D477-2CEF-4E18-8139-124939AE510E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C165D477-2CEF-4E18-8139-124939AE510E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C165D477-2CEF-4E18-8139-124939AE510E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF059D3F-D21C-4FCD-A441-2D12110A7843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF059D3F-D21C-4FCD-A441-2D12110A7843}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF059D3F-D21C-4FCD-A441-2D12110A7843}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF059D3F-D21C-4FCD-A441-2D12110A7843}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE693967-F27E-4B07-99D6-F770B1B81106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE693967-F27E-4B07-99D6-F770B1B81106}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE693967-F27E-4B07-99D6-F770B1B81106}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE693967-F27E-4B07-99D6-F770B1B81106}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -16,6 +16,7 @@ using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using SOP.API.Hubs;
 
 namespace SOP.API
 {
