@@ -1,22 +1,30 @@
 ﻿
 using EasyNetQ;
+using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
+using SOP.AgeServer;
 using SOP.Messages.Messages;
 
 namespace SOP.AuditLog
 {
     class Program
     {
+        private static Ager.AgerClient _grpcClient;
         private static readonly IConfigurationRoot config = ReadConfiguration();
-
         private const string SUBSCRIBER_ID = "SOP.AuditLog";
+        private static IBus _bus;
 
         static async Task Main(string[] args)
         {
-            using var bus = RabbitHutch.CreateBus(config.GetConnectionString("SOPRabbitMQ"));
+            _bus = RabbitHutch.CreateBus(config.GetConnectionString("SOPRabbitMQ"));
             Console.WriteLine("Connected! Listening for NewVehicleMessage and NewOwnerMessages messages.");
-            var vehiclesMessages = bus.PubSub.SubscribeAsync<NewVehicleMessage>(SUBSCRIBER_ID, HandleNewVehicleMessage);
-            var ownerMessages = bus.PubSub.SubscribeAsync<NewOwnerMessage>(SUBSCRIBER_ID, HandleNewOwnerMessage);
+            var vehiclesMessages = _bus.PubSub.SubscribeAsync<NewVehicleMessage>(SUBSCRIBER_ID, HandleNewVehicleMessage);
+            var ownerMessages = _bus.PubSub.SubscribeAsync<NewOwnerMessage>(SUBSCRIBER_ID, HandleNewOwnerMessage);
+
+            var grpcAddress = "http://localhost:5052";
+            using var channel = GrpcChannel.ForAddress(grpcAddress);
+            _grpcClient = new Ager.AgerClient(channel);
+            Console.WriteLine($"Connected to gRPC on {grpcAddress}");
 
             Task.WaitAll(vehiclesMessages, ownerMessages);
 
@@ -29,10 +37,21 @@ namespace SOP.AuditLog
             Console.WriteLine(csv);
         }
 
-        private static void HandleNewOwnerMessage(NewOwnerMessage message)
+        private static async Task HandleNewOwnerMessage(NewOwnerMessage message)
         {
-            var csv = $"{message.Email}, {message.Surname}, {message.Name}, {message.VehicleRegistration}, {message.Birthday}, {message.ListedAtUtc}";
-            Console.WriteLine(csv);
+            var ageRequest = new AgeRequest
+            {
+                Email = message.Email,
+                Name = message.Name,
+                Surname = message.Surname,
+                Birthday = message.Birthday.Replace(".", "-"),
+                VehicleRegistration = message.VehicleRegistration
+            };
+
+            var ageReply = await _grpcClient.GetAgeAsync(ageRequest);
+
+            var newOwnerAgeMessage = new NewOwnerAgeMessage(message, ageReply.Years, ageReply.Months, ageReply.Days);
+            await _bus.PubSub.PublishAsync(newOwnerAgeMessage);
         }
 
         private static IConfigurationRoot ReadConfiguration()

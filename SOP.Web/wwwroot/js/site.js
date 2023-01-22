@@ -6,10 +6,11 @@ function displayNotification(user, json) {
     var data = JSON.parse(json);
 
     var message =
-        `NEW ONWER! <a href="/owner/details/${data.email}">${data.email}</a> (${data.name} ${data.surname}, 
-            ${data.birthday}, ${data.registrationVehicle}).`;
+        `NEW ONWER: ${data.name} ${data.surname}, 
+            ${data.birthday}, ${data.registrationVehicle}.
+            Owner lives ${data.years} years, ${data.months} months and ${data.days} days.`;
 
-    var $div = $(`<div>${message}</div>`);
+    var $div = $(`<div>${user}: ${message}</div>`);
     $target.prepend($div);
     window.setTimeout(function () { $div.fadeOut(2000, function () { $div.remove(); }); }, 8000);
 }

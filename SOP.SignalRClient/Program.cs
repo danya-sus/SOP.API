@@ -1,52 +1,60 @@
 ﻿
-
+using EasyNetQ;
 using Microsoft.AspNetCore.SignalR.Client;
-using Newtonsoft.Json.Linq;
-using SOP.Models.Entities;
+using Microsoft.Extensions.Configuration;
+using SOP.Messages.Messages;
+using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 public class Program
 {
-    const string SIGNALR_HUB_URL = "http://localhost:5034/hub";
-    private static HubConnection hub;
+    private static readonly IConfigurationRoot config = ReadConfiguration();
+    private static HubConnection _hub;
+    private const string SUBSCRIBER_ID = "SOP.SignalRClient";
+    private static IBus _bus;
 
     static async Task Main(string[] args)
     {
-        hub = new HubConnectionBuilder().WithUrl(SIGNALR_HUB_URL).Build();
-        await hub.StartAsync();
+        _bus = RabbitHutch.CreateBus(config.GetConnectionString("SOPRabbitMQ"));
+        Console.WriteLine("Connected to bus. Listening for newOwnerMessage...");
+
+        var ownerMessages = _bus.PubSub.SubscribeAsync<NewOwnerAgeMessage>(SUBSCRIBER_ID, HandleNewOwnerMessage);
+
+        _hub = new HubConnectionBuilder().WithUrl(config.GetConnectionString("SIGNALR_HUB_URL")).Build();
+        await _hub.StartAsync();
         Console.WriteLine("Hub started!");
-        Console.WriteLine("Press any key...");
-        var i = 0;
-        while (true)
-        {
-            var input = Console.ReadLine();
+        Console.WriteLine("Ctrl-C to exit...");
 
-            var owner = new
-            {
-                email = "testing@yandex.ru",
-                name = "Ivan",
-                surname = "Ivanov",
-                birthday = "01-01-2001",
-                registrationVehicle = "NEW123A"
-            };
+        Task.WaitAll(ownerMessages);
 
-            var ownerJson = JObject.FromObject(owner).ToString();
-
-            var vehicle = new
-            {
-                registration = "NEW123A",
-                manufacturerName = "audi",
-                modelName = "audi-80",
-                color = "Black",
-                year = 2001,
-                currencyCode = "RUB",
-                price = 200000
-            };
-
-            var vehicleJson = JObject.FromObject(vehicle).ToString();
-
-            var message = $"Message #{i++} from SOP.SignalRClient {input}";
-            await hub.SendAsync("NotifyWebUsers", "SOP.SignalRClient", ownerJson);
-            Console.WriteLine($"Sent: {message}");
-        }
+        Console.ReadKey(true);
     }
+
+    private static async Task HandleNewOwnerMessage(NewOwnerAgeMessage message)
+    {
+        var csvRow = $"{message.Years} {message.Months} {message.Days} : {message.Name}, {message.Surname}, " +
+                     $"{message.VehicleRegistration}, {message.Birthday}, {message.Email}, {message.ListedAtUtc}";
+
+        Console.WriteLine(csvRow);
+
+        var json = JsonSerializer.Serialize(message, JsonSettings());
+
+        await _hub.SendAsync("NotifyWebUsers", "SOP.SignalRClient", json);
+    }
+
+    private static IConfigurationRoot ReadConfiguration()
+    {
+        var basePath = Directory.GetParent(AppContext.BaseDirectory).FullName;
+        return new ConfigurationBuilder()
+            .SetBasePath(basePath)
+            .AddJsonFile("appsettings.json")
+            .AddEnvironmentVariables()
+            .Build();
+    }
+
+    static JsonSerializerOptions JsonSettings() =>
+            new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
 }

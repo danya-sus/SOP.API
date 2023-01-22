@@ -7,6 +7,7 @@ using SOP.Models.Entities;
 using SOP.ModelsDto.Dto;
 using System;
 using System.Dynamic;
+using System.Threading.Tasks;
 
 namespace SOP.API.Controllers.Api
 {
@@ -104,10 +105,10 @@ namespace SOP.API.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody] OwnerDto dto)
+        public async Task<IActionResult> Post([FromBody] OwnerDto dto)
         {
             var result = _repository.CreateOwner(dto);
-            PublishNewOwnerMessage(result);
+            await PublishNewOwnerMessage(result);
             return GetOwner(dto.Email);
         }
 
@@ -134,18 +135,19 @@ namespace SOP.API.Controllers.Api
             return NoContent();
         }
 
-        private void PublishNewOwnerMessage(Owner owner)
+        private async Task PublishNewOwnerMessage(Owner owner)
         {
             var message = new NewOwnerMessage
             {
                 Email = owner.Email,
                 Name = owner.Name,
                 Surname = owner.Surname,
-                Birthday = owner.Birthday,
+                Birthday = owner.Birthday.ToString(),
                 VehicleRegistration = owner.VehicleRegistration,
                 ListedAtUtc = DateTime.Now
             };
-            _bus.PubSub.Publish(message);
+
+            await _bus.PubSub.PublishAsync(message);
         }
     }
 }
